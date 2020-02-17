@@ -15,16 +15,18 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as TCPServerSocket:
     Client_conn, Client_addr = TCPServerSocket.accept()
     with Client_conn:
         print("Conectado a", Client_addr)
+        print("Esperando a recibir datos... ")
+        data = Client_conn.recv(buffer_size)
+        dif = str(data.decode("utf-8"))
+        print(dif)
+        print("4x4" if dif == "1" else "6x6")
+        b = True if dif == "1" else False
+        x = Memoria.Memoria(b)
+        print("Recibido,", data, "   de ", Client_addr)
+        print("Enviando respuesta a", Client_addr)
+        x.Tablero.append("cliente")
+        Client_conn.sendall(bytes(json.dumps(x.Tablero).encode()))
         while True:
-            print("Esperando a recibir datos... ")
-            data = Client_conn.recv(buffer_size)
-            dif = str(data.decode("utf-8"))
-            print(dif)
-            print("4x4" if dif == "1" else "6x6")
-            b = True if dif == "1" else False
-            x = Memoria.Memoria(b)
-            print("Recibido,", data, "   de ", Client_addr)
-            if not data:
-                break
-            print("Enviando respuesta a", Client_addr)
-            Client_conn.sendall(bytes(json.dumps(x.Tablero).encode()))
+            escoge = Client_conn.recv(buffer_size).decode()
+            x.validaTurno(escoge[0], escoge[1], escoge[2], escoge[3])
+
