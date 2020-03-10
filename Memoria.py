@@ -25,9 +25,10 @@ class Memoria:
                 i += 1
 
     def validaTurno(self, x1, y1, x2, y2):
+        #print("valida turno x1"+x1+ " y1" +y1+" x2"+x2+ "y2"+y2)
         if [x1, y1] in self.usadas or [x2, y2] in self.usadas:
             return False
-        t = self.Tablero[y1][x1] == self.Tablero[y2][x2]
+        t = self.Tablero[int(y1)][int(x1)] == self.Tablero[int(y2)][int(x2)]
         if t:
             self.usadas.append([x1, y1], [x2, y2])
         return t

@@ -37,15 +37,17 @@ def imprimeTablero(Tablero, pos1=None, pos2=None):
     y, x = 0, 0
     stri = ""
     if pos1 != None or pos2 != None:
-        for fila in Tablero:
+        for fila in Tablero[:-1]:
+            stri += str(y + 1)
             for col in fila:
-                stri += Tablero[pos1[0]][pos1[1]] if pos1 == [y, x] else Tablero[pos2[0]][pos2[1]] if pos2 == [y,
-                                                                                                               x] else "X"
+                stri += str(Tablero[pos1[0]][pos1[1]]) if pos1 == [y, x] else str(
+                    Tablero[pos2[0]][pos2[1]]) if pos2 == [y, x] else "X"
                 x += 1
             y += 1
             print(stri)
+            stri = ""
     else:
-        for fila in Tablero:
+        for fila in Tablero[:-1]:
             stri += str(y + 1)
             for col in fila:
                 stri += "X"
@@ -63,7 +65,7 @@ while True:
         TCPClientSocket.sendall(bytes(tam.encode("utf-8")))
         print("Esperando una respuesta...")
         data = TCPClientSocket.recv(buffer_size)
-        print(data.decode())
+        # print(data.decode())
         tab = json.loads(data.decode())
         while True:
             Turno = tab[-1]
@@ -72,5 +74,11 @@ while True:
                 coor = []
                 casilla = input("Escribe la coordenada del tablero que quieres voltear (a1 )")
                 coor.append(x(casilla[0]))
-                coor.append(x(int(casilla[1])))
+                coor.append((int(casilla[1]) - 1))
+                print(coor)
                 imprimeTablero(tab, coor)
+                casilla = input("Escribe la coordenada del tablero que quieres voltear (a1 )")
+                coor.append(x(casilla[0]))
+                coor.append((int(casilla[1]) - 1))
+                imprimeTablero(tab, coor)
+                TCPClientSocket.sendall(bytes(json.dumps(coor).encode()))
